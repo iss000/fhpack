@@ -10,7 +10,7 @@ the LZ4 compression format, called LZ4FH ("fadden's hi-res").
 
 I've had an idea for a project involving hi-res graphics compression
 for several years, but didn't do much about it.  After learning
-about [LZ4](http://lz4.org/), and seeing uncompressors written
+about [LZ4](http://lz4.org/), and seeing decompressors written
 for the [6502](http://pferrie.host22.com/misc/appleii.htm) and
 [65816](http://www.brutaldeluxe.fr/products/crossdevtools/lz4/index.html),
 I decided to see if I could apply LZ4 to hi-res images.
@@ -18,7 +18,7 @@ I decided to see if I could apply LZ4 to hi-res images.
 A few hi-res compressors were written back in The Day, usually employing
 run-length encoding, which is easy to write and fast to encode and decode.
 In the spirit of LZ4, I decided to put together an asymmetric codec,
-meaning compression is very very slow, but uncompression is very very fast.
+meaning compression is very very slow, but decompression is very very fast.
 
 The result is a modified form of LZ4 that consistently beats LZ4-HC,
 and generally comes close to (and occasionally beats) ShrinkIt's LZW/II.
@@ -36,7 +36,7 @@ because we're only compressing 8KB of data.  The high-compression mode
 does about 4% better on average -- not huge, but not negligible.
 
 Other compression programs, such as gzip, produce significantly smaller
-output, but uncompression is much slower and requires more memory.
+output, but decompression is much slower and requires more memory.
 
 The comments in [fhpack.cpp](fhpack.cpp) describe the data format.  It's
 essentially LZ4 modified to work better on a system with 8-bit registers.
@@ -76,7 +76,7 @@ yielded the smallest output.
 
 ## Apple II Code and Demos ##
 
-The 6502/65816 versions of the uncompressor (source and binaries), as
+The 6502/65816 versions of the decompressor (source and binaries), as
 well as two slideshow applications written in Applesoft and a number
 of sample files, are provided on the [attached disk images](fhpack_disks.zip)
 (click "view raw" to download them from github).
@@ -84,7 +84,7 @@ of sample files, are provided on the [attached disk images](fhpack_disks.zip)
 There are six disk images.  The first three hold the slide show demo:
 
  * `LZ4FHDemo.do` (/LZ4FH, 140KB) - Source and object code for the
-   uncompression routines, plus a few test images and the Applesoft
+   decompression routines, plus a few test images and the Applesoft
    "SLIDESHOW" program.
  * `UncompressedSlides.do` (/SLIDESHOW, 140KB) - A set of 16 uncompressed
    hi-res images.
@@ -102,7 +102,7 @@ then start a slide show, moving through them as quickly as possible.
 By swapping the compressed and uncompressed disks and restarting the
 program, you can compare the performance with and without compression.
 (For a 5.25" disk, it's generally faster to load a compressed image and
-uncompress it than it is to load an uncompressed image.)
+decompress it than it is to load an uncompressed image.)
 
 
 There is a second demo, called "HYPERSLIDE", which shows off the raw
@@ -116,7 +116,7 @@ this disk:
 To [run the demo](https://www.youtube.com/watch?v=Wwg84nIkRZU), put
 the disk image in slot 6 drive 1, boot the disk,
 and "-HYPERSLIDE".  If you are running on a IIgs, you may want to try it
-with the 65816 uncompressor, which is much faster than the 6502 version.
+with the 65816 decompressor, which is much faster than the 6502 version.
 If you want to compute frame timings, you can set an iteration count,
 and the slide show will beep at the start and end.
 
@@ -148,7 +148,7 @@ consistency is expected.
 
 HyperSlide incurs a fair bit of overhead from Applesoft BASIC.  The
 "blitz test", included on the LZ4FH demo disk, generates machine language
-calls that uncompress the same image 100x, eliminating all overhead
+calls that decompress the same image 100x, eliminating all overhead
 (and simulating what HyperSlide could do if it weren't written in
 BASIC).  The speed improves to 5.6 fps.  To put that into perspective,
 you could unpack a green image twice in the time it takes "CALL 62454"
@@ -161,8 +161,8 @@ HyperSlide hits 7.7 fps, and BLITZTEST tops 12 fps.
 
 #### Code Notes ####
 
-The uncompressor takes as arguments the addresses of the compressed data
-and the buffer to uncompress to.  These are poked into memory locations
+The decompressor takes as arguments the addresses of the compressed data
+and the buffer to decompress to.  These are poked into memory locations
 $02FC and $02FE.  In the current implementation, the output buffer must
 be $2000 or $4000 (the two hi-res pages).
 
